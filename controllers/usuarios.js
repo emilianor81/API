@@ -1,21 +1,30 @@
 const { response } = require('express');
 const bcrypt = require('bcryptjs')
-const { generarJWT } = require('../helpers/jwt');
+const { generarJWT , generarJWTUser } = require('../helpers/jwt');
+const axios = require('axios')
 
 
 const Usuario = require('../models/usuario')
 
-const getUsuarios = (req, res)=> {
-    res.json({
-        ok: true,
-        usuarios: [{
-            id: 123,
-            nombre: 'get Usuarios',
-            uid: req.uid
-        }],
-        msg: 'Listado de Usuarios- GetUsuarios'
-    })
 
+const getUsuarios = async (req, res)=> {
+    try {
+        //Generar un token
+        const businessToken = await generarJWT( req.uid );
+       
+        const response = await axios.get('http://localhost:3000/negocio'
+        , {
+        headers: {
+            authorization: `Bearer ${businessToken}`,
+            uid: req.uid,
+        },
+        }
+        );
+        res.json(response.data);
+       
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 const crearUsuario = async (req, res = response )=> {
@@ -25,7 +34,6 @@ const crearUsuario = async (req, res = response )=> {
         if (existeUsuario) {
             return res.status(409).json({ message: 'El correo ya está registrado' });
           }
-
         const usuario = new Usuario( req.body)
         
         //Encriptar contraseña

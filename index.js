@@ -19,8 +19,9 @@ dbConnection();
 
 
 //Rutas
-app.use('/api/usuarios' , require('./routes/usuarios'))
-app.use('/api/login' , require('./routes/auth'))
+app.use('/login' , require('./routes/auth'))
+app.use('/usuarios' , require('./routes/usuarios'))
+app.use('/negocio' , require('./routes/negocio'))
 
 
 app.listen(3000 , ()=>{
