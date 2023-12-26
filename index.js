@@ -15,10 +15,14 @@ app.use(cors());
 app.use( express.json());
 
 // Base de datos
-dbConnection();
+//dbConnection();
 
 
 //Rutas
+/* app.use('/login' ,( req, res)=> {
+    console.log('Entre aqui')
+}) */
+
 app.use('/login' , require('./routes/auth'))
 app.use('/usuarios' , require('./routes/usuarios'))
 app.use('/negocio' , require('./routes/negocio'))
