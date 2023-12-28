@@ -13,7 +13,7 @@ const login = async (req, res)=> {
 
         //Verificar usuario existente
         if(!usuarioDB){
-            res.status(500).json({
+            return res.status(500).json({
                 ok:false,
                 msg: 'Usuario o contraseña no valido'
             })
@@ -41,7 +41,7 @@ const login = async (req, res)=> {
         console.log(error)
         res.status(500).json({
             ok:false,
-            msg: 'hable con el admin'
+            msg: 'Hable con el admin'
         })
     }
 }

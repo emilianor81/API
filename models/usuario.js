@@ -11,6 +11,10 @@ const UsuarioSchema = Schema({
         type: String,
         required: true,
     },
+    nombre: {
+        type: String,
+        required: true,
+    },
 })
 
 UsuarioSchema.method( 'toJSON', function(){

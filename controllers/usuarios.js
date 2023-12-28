@@ -9,19 +9,11 @@ const Usuario = require('../models/usuario')
 
 const getUsuarios = async (req, res)=> {
     try {
-        //Generar un token
-        const businessToken = await generarJWT( req.uid );
-       
-        const response = await axios.get('http://localhost:3000/negocio'
-        , {
-        headers: {
-            authorization: `Bearer ${businessToken}`,
-            uid: req.uid,
-        },
-        }
-        );
-        res.json(response.data);
-       
+        const usuarios = await Usuario.find({}, ' email ');
+        return res.json({
+            ok: true,
+            usuarios: [usuarios],
+        }) 
     } catch (error) {
         console.log(error)
     }
@@ -38,14 +30,13 @@ const crearUsuario = async (req, res = response )=> {
         
         //Encriptar contraseña
         const salt = bcrypt.genSaltSync();
-        usuario.password = bcrypt.hashSync( password , salt);
+        usuario.password = bcrypt.hashSync( password , salt); 
 
         //Guardar usuario
         await usuario.save(); 
 
          //Generar un token
-         const token = await generarJWT( usuario.id );
-    
+        const token = await generarJWT( usuario._id );  
         res.json({
             ok: true,
             usuario: [usuario],
@@ -67,7 +58,67 @@ const crearUsuario = async (req, res = response )=> {
 
 }
 
+const actualizarUsuario = async (req, res)=> {
+    const uid = req.params.id;
+    try {
+        const usuarioUpdate = await Usuario.findById( uid);
+        if (!usuarioUpdate) {
+            return res.status(404).json({
+                ok: false,
+                message: 'El correo no está registrado'
+            });
+          }
+        //Actualizaciones
+        const {password, ...campos} = req.body;
+        if(usuarioUpdate.email === req.body.email){
+            delete campos.email;
+        }else{
+            const existeEmail = await Usuario.findOne({ email: req.body.email })
+            if(existeEmail){
+                return res.status(400).json({
+                    ok: false,
+                    msg: 'Ya existe un usuario con ese mail. No es posible actualizar'
+                })
+            }
+        }
+        const usuarioActualizado = await Usuario.findByIdAndUpdate(uid , campos , {new : true});
+
+        return res.json({
+            ok: true,
+            usuario: usuarioActualizado,
+        }) 
+       
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const borrarUsuario = async (req, res)=> {
+    const uid = req.params.id;
+    try {
+        const usuarioDelete = await Usuario.findById( uid);
+        if (!usuarioDelete) {
+            return res.status(404).json({
+                ok: false,
+                message: 'El correo no está registrado'
+            });
+        }
+        //Borrar
+        await Usuario.findByIdAndDelete( uid )
+        
+        return res.status(200).json({
+            ok: true,
+            message: 'Usuario eliminado con éxito'
+        });
+   
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 module.exports = {
     getUsuarios,
-    crearUsuario
+    crearUsuario,
+    actualizarUsuario,
+    borrarUsuario
 }

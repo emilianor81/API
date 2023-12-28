@@ -15,19 +15,15 @@ app.use(cors());
 app.use( express.json());
 
 // Base de datos
-//dbConnection();
-
+dbConnection();
 
 //Rutas
-/* app.use('/login' ,( req, res)=> {
-    console.log('Entre aqui')
-}) */
-
 app.use('/login' , require('./routes/auth'))
 app.use('/usuarios' , require('./routes/usuarios'))
 app.use('/negocio' , require('./routes/negocio'))
 
+//Server
 
-app.listen(3000 , ()=>{
+app.listen(process.env.PORT , ()=>{
     console.log('Server listening in port 3000')
 })
