@@ -9,7 +9,7 @@ const Usuario = require('../models/usuario')
 
 const getUsuarios = async (req, res)=> {
     try {
-        const usuarios = await Usuario.find({}, ' email ');
+        const usuarios = await Usuario.find();
         return res.json({
             ok: true,
             usuarios: [usuarios],
@@ -45,8 +45,6 @@ const crearUsuario = async (req, res = response )=> {
         }) 
 
     } catch (error) {
-
-        console.log(error)
         res.status(500).json({
             ok: false,
             msg: 'Error inesperado, revisar logs'

@@ -23,7 +23,6 @@ router.put('/:id',
 
 
 router.post('/',
-        validarJWT,
         [
             check('email', 'El email es obligatorio y debe ser email').not().isEmpty(),
             check('password', 'El password es obligatorio').not().isEmpty(),

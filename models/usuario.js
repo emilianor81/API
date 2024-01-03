@@ -15,6 +15,9 @@ const UsuarioSchema = Schema({
         type: String,
         required: true,
     },
+    google: {
+        type: Boolean,
+    },
 })
 
 UsuarioSchema.method( 'toJSON', function(){

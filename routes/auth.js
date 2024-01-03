@@ -6,16 +6,13 @@ const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validar-campos');
 const { validarJWT } = require('../middlewares/validar-jwt');
 
-const { login  } = require('../controllers/auth')
+const { login, loginGoogle , } = require('../controllers/auth')
 
 const router = Router();
 
 router.get('/', validarJWT,  ()=> {
     console.log('Estoy en el routes de get login')
 })
-
-/* router.get('/', validarJWT,  getUsuarios )
- */
 
 router.post('/',
         [
@@ -24,6 +21,14 @@ router.post('/',
             validarCampos,
         ],
         login
+)
+
+router.post('/google',
+        [
+            check('token', 'El token de google es obligatorio').not().isEmpty(),
+            validarCampos,
+        ],
+        loginGoogle
 )
 
 
